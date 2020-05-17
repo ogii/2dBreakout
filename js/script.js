@@ -12,6 +12,40 @@ let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
 
+let brickGrid = {
+  rowCount: 3,
+  columnCount: 5,
+  width: 75,
+  height: 20,
+  padding: 10,
+  offsetTop: 30,
+  offsetLeft: 30
+};
+
+let bricks = [];
+for (let c = 0; c < brickGrid.columnCount; c++) {
+  bricks[c] = [];
+  for (let r = 0; r < brickGrid.rowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0 };
+  }
+}
+
+const drawBricks = () => {
+  for (let c = 0; c < brickGrid.columnCount; c++) {
+    for (let r = 0; r < brickGrid.rowCount; r++) {
+      let brickX = (c * (brickGrid.width + brickGrid.padding)) + brickGrid.offsetLeft;
+      let brickY = (r * (brickGrid.height + brickGrid.padding)) + brickGrid.offsetTop;
+      bricks[c][r].x = brickX;
+      bricks[c][r].y = brickY;
+      ctx.beginPath();
+      ctx.rect(brickX, brickY, brickGrid.width, brickGrid.height);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+};
+
 const keyDownHandler = (e) => {
   if (e.key == "Right" || e.key == "ArrowRight") {
     rightPressed = true;
@@ -48,6 +82,7 @@ const renderPaddle = () => {
 
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
   renderBall();
   renderPaddle();
   if (x + dx > (canvas.width - ballRadius) || x + dx < 0) {
@@ -61,8 +96,9 @@ const draw = () => {
       dy = -dy;
     }
     else {
+      alert('You lost!');
       document.location.reload();
-      clearInterval(interval);
+      clearInterval(moveBall);
     }
   }
 
